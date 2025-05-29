@@ -1,0 +1,19 @@
+### start payment
+
+POST localhost:8080/api/v1/payments
+Content-Type: application/json
+
+{
+  "amount": 300000,
+  "orderId": "G-9494"
+}
+
+### get history by businessKey
+GET localhost:8080/api/v1/payments/history/variables/business-key?businessKey=b331ecaa-4d83-43cb-98b1-5abd98f93f64
+
+
+### get task
+GET localhost:8080/api/v1/payments/tasks/active?taskName=Payment process end&exactMatch=false
+
+### complete task
+POST localhost:8080/api/v1/payments/tasks/complete-query?taskName=Payment process end&exactMatch=false
