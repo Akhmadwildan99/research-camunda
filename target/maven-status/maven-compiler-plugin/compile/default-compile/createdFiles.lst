@@ -1,6 +1,6 @@
-com/example/workflow/model/response/GenericResponse.class
 com/example/workflow/service/ReserveSeatOnBoat.class
 com/example/workflow/Application.class
-com/example/workflow/controller/PaymentController.class
 com/example/workflow/service/CamundaService.class
 com/example/workflow/service/PaymentNotif.class
+com/example/workflow/model/response/GenericResponse.class
+com/example/workflow/controller/PaymentController.class

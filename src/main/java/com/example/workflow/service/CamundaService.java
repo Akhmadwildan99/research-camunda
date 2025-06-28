@@ -55,6 +55,53 @@ public class CamundaService {
     }
 
 
+    public Task getTask(String taskId) {
+        return taskService.createTaskQuery().taskId(taskId).singleResult();
+    }
+    
+    public List<Task> getActiveTasksByBusinessKey(String businessKey) {
+        return taskService.createTaskQuery()
+                .processInstanceBusinessKey(businessKey)
+                .active()
+                .list();
+    }
+    
+    public Map<String, Object> getProcessStatus(String businessKey) {
+        Map<String, Object> result = new HashMap<>();
+        
+        // Get active tasks
+        List<Task> activeTasks = getActiveTasksByBusinessKey(businessKey);
+        result.put("activeTasks", activeTasks.stream().map(task -> {
+            Map<String, Object> taskInfo = new HashMap<>();
+            taskInfo.put("taskId", task.getId());
+            taskInfo.put("taskName", task.getName());
+            taskInfo.put("assignee", task.getAssignee());
+            taskInfo.put("createTime", task.getCreateTime());
+            return taskInfo;
+        }).toList());
+        
+        // Get historic tasks
+        List<org.camunda.bpm.engine.history.HistoricTaskInstance> historicTasks = historyService
+                .createHistoricTaskInstanceQuery()
+                .processInstanceBusinessKey(businessKey)
+                .finished()
+                .orderByHistoricTaskInstanceEndTime()
+                .asc()
+                .list();
+        
+        result.put("completedTasks", historicTasks.stream().map(task -> {
+            Map<String, Object> taskInfo = new HashMap<>();
+            taskInfo.put("taskId", task.getId());
+            taskInfo.put("taskName", task.getName());
+            taskInfo.put("assignee", task.getAssignee());
+            taskInfo.put("startTime", task.getStartTime());
+            taskInfo.put("endTime", task.getEndTime());
+            return taskInfo;
+        }).toList());
+        
+        return result;
+    }
+
     public Map<String, Object> getHistoricVariablesByBusinessKey(String businessKey) {
         HistoricProcessInstance process = historyService.createHistoricProcessInstanceQuery()
                 .processInstanceBusinessKey(businessKey)

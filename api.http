@@ -17,3 +17,54 @@ GET localhost:8080/api/v1/payments/tasks/active?taskName=Payment process end&exa
 
 ### complete task
 POST localhost:8080/api/v1/payments/tasks/complete-query?taskName=Payment process end&exactMatch=false
+
+### Start Employee Reimbursement Process - Manager Route (< 1M IDR)
+POST http://localhost:8080/api/v1/reimbursement/start
+Content-Type: application/json
+
+{
+  "description": "Business lunch with client",
+  "amount": 500000,
+  "transactionDefinition": "MEAL_EXPENSE"
+}
+
+### @startProsess Start Employee Reimbursement Process - Director Route (>= 1M IDR)
+POST http://localhost:8080/api/v1/reimbursement/start
+Content-Type: application/json
+
+{
+  "description": "Equipment purchase",
+  "amount": 1500000,
+  "transactionDefinition": "EQUIPMENT_EXPENSE"
+}
+
+
+
+### Manager Approval - Approve
+POST http://localhost:8080/api/v1/reimbursement/approve/manager/fa6eaab1-39cd-4cb4-bb6a-9d1a2b595e20?approved=true
+
+### Manager Approval - Reject
+POST http://localhost:8080/api/v1/reimbursement/approve/manager/9c394ac6-18a6-4e72-a115-ed8b9b851113?approved=false
+
+### Director Approval - Approve
+POST http://localhost:8080/api/v1/reimbursement/approve/director/fa6eaab1-39cd-4cb4-bb6a-9d1a2b595e20?approved=true
+
+### Director Approval - Reject
+POST http://localhost:8080/api/v1/reimbursement/approve/director/fa6eaab1-39cd-4cb4-bb6a-9d1a2b595e20?approved=false
+### Handle Rejection - Resubmit
+POST http://localhost:8080/api/v1/reimbursement/rejection/fa6eaab1-39cd-4cb4-bb6a-9d1a2b595e20?resubmit=true
+
+### Handle Rejection - End Process
+POST http://localhost:8080/api/v1/reimbursement/rejection/{{businessKey}}?resubmit=false
+
+### Get Process Status (History + Current Tasks)
+GET http://localhost:8080/api/v1/reimbursement/status/fa6eaab1-39cd-4cb4-bb6a-9d1a2b595e20
+### Resubmit Reimbursement
+POST http://localhost:8080/api/v1/reimbursement/resubmit/fa6eaab1-39cd-4cb4-bb6a-9d1a2b595e20
+Content-Type: application/json
+
+{
+  "description": "Updated business lunch with client - corrected amount",
+  "amount": 750000,
+  "transactionDefinition": "MEAL_EXPENSE"
+}
